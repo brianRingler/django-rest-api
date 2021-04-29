@@ -1,4 +1,3 @@
-from profiles_project.settings import AUTH_PASSWORD_VALIDATORS
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -17,8 +16,7 @@ class UserProfileManager(BaseUserManager):
         '''Create a new user profile'''
         if not email:
             raise ValueError('Users must have an email address')
-
-        
+                
         email = self.normalize_email(email),
         user = self.model(email=email, name=name) 
         
@@ -29,13 +27,18 @@ class UserProfileManager(BaseUserManager):
         return user
 
 
-    def create_superuser(self, email, name, password=None):
+    def create_superuser(self, email, name, password):
         '''Create a new superuser profile'''
-        user = self.create_user(email, name, password) # ORDER MATTERS - name, email need to match (self, name, email, password)
-
+        # ORDER MATTERS - name, email need to match (self, name, email, password)
+        user = self.create_user(
+                                email=self.normalize_email(email), 
+                                name=name, 
+                                password=password
+                                ) 
+        user.is_admin = True
+        user.is_active = True
         # is_superuser is created automatically by PermissionsMixin
         user.is_superuser = True
-
         # is_staff was created in UserProfile class  
         user.is_staff = True
         user.save(using=self._db)

@@ -128,3 +128,7 @@ will first find the app "profiles_api_app" that you specify and then look
 for UserProfile within models.py'''
 
 AUTH_USER_MODEL = 'profiles_api_app.UserProfile'
+
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.RemoteUserBackend',
+# )
