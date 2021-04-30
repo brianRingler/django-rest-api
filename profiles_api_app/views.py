@@ -1,11 +1,18 @@
 # This is the API view class. We are using this in-place of Django's View class
+from django.db.models.query import QuerySet
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication 
 # List of HTTP status codes 
 from rest_framework import status
+from rest_framework import viewsets
+
 
 # from our profiles_api_app directory import serializers.py 
 from profiles_api_app import serializers
+from profiles_api_app import models
+# This is the permissions we created NOT the Django permissions 
+from profiles_api_app import permissions
 
 
 class HelloApiView(APIView):
@@ -81,8 +88,6 @@ class HelloApiView(APIView):
 # ------------  Creating a Simple ViewSet  -----------------
 
 
-from rest_framework import viewsets
-
 class HelloViewSet(viewsets.ViewSet):
     '''Test API ViewSet'''
     serializer_class = serializers.HelloSerializer
@@ -131,5 +136,17 @@ class HelloViewSet(viewsets.ViewSet):
 
 
     def destroy(self, request, pk=None):
+
         '''Handle removing  an object by primary key'''
         return Response({'http_method' : 'destroy is DELETE'})
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    '''Handle creating and updating profiles'''
+    serializer_class = serializers.UserProfilerSerializer
+    queryset = models.UserProfile.objects.all()
+    # Do not forget the comma we want to create a tuple
+    authentication_classes = (TokenAuthentication, )
+    
+    # Do not forget the comma we want to create a tuple
+    permission_classes = (permissions.UpdateOwnProfile, )

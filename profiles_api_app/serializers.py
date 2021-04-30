@@ -21,3 +21,18 @@ class UserProfilerSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         '''Create and return a new user'''
+        user = models.UserProfile.objects.create_user(
+            email=validated_data['email'],
+            name=validated_data['name'],
+            password=validated_data['password']
+        )
+
+        return user
+
+    def updated(self, instance, validated_data):
+        '''Handle updating user account'''
+        if 'password' in validated_data:
+            password = validated_data.pop('password')
+            instance.set_password(password)
+            
+        return super().update(instance, validated_data)

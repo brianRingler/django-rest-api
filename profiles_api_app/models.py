@@ -13,12 +13,13 @@ from django.contrib.auth.models import BaseUserManager
 class UserProfileManager(BaseUserManager):
     '''Manager for user profiles'''
 
+    # password=None makes the field optional
     def create_user(self, email, name, password=None):
         '''Create a new user profile'''
         if not email:
             raise ValueError('Users must have an email address')
                 
-        email = self.normalize_email(email),
+        email = self.normalize_email(email)
         user = self.model(email=email, name=name) 
         
         # use Django set_password function to convert to hashed password (encrypted) 
