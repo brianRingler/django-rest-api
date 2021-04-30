@@ -66,6 +66,7 @@ class HelloApiView(APIView):
                         'last_name' : 'Cool', 
                         'method' : 'PATCH'
                         })
+
     def delete(self, request, pk=None):
         '''Like PUT and UPDATE we are going to DELETE a record from our 
         db table.'''
@@ -75,3 +76,60 @@ class HelloApiView(APIView):
                         'last_name' : 'Cool', 
                         'method' : 'DELETE'
                         })
+
+
+# ------------  Creating a Simple ViewSet  -----------------
+
+
+from rest_framework import viewsets
+
+class HelloViewSet(viewsets.ViewSet):
+    '''Test API ViewSet'''
+    serializer_class = serializers.HelloSerializer
+ 
+    def list(self, request):
+        a_viewset = [
+                    'Uses actions (list, create, update, retrieve, update, partial_update',
+                    'Automatically maps to URLs using Routers', 
+                    'Provides more functionality with less code'
+                    ]
+        return Response({'message' : 'Hello!', 'a_viewset' : a_viewset})
+
+    def create(self, request):
+        '''Create a new hello message'''    
+
+        # First get the data 
+        serializer = self.serializer_class(data=request.data)   
+
+        # validate the data and return response based on status
+        if serializer.is_valid():
+            # Here we are validating that the name is at least 10 characters
+            name = serializer.validated_data.get('name')
+            message = f'Hello, {name} this is HelloViewSet'
+            return Response({'message' : message})
+        else:
+            # if not status 200 inform requester of bad request
+            return Response(
+                            serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST
+                            )
+
+    def retrieve(self, request, pk=None):
+        '''Handle getting object by using id. This would be a query when 
+        we do this for real'''
+        return Response({'http_method' : 'retrieve is a GET'})
+
+
+    def update(self, request, pk=None):
+        '''Handle updating object by primary key'''
+        return Response({'http_method' : 'update is PUT'})
+
+
+    def partial_update(self, request, pk=None):
+        '''Handle partial update of object by primary key'''
+        return Response({'http_method' : 'partial_update is PATCH'})
+
+
+    def destroy(self, request, pk=None):
+        '''Handle removing  an object by primary key'''
+        return Response({'http_method' : 'destroy is DELETE'})
