@@ -123,12 +123,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 '''Tell Django that we have a custom User Profile for our 
-profiles_api_app. The name of that model class us UserProfile.  Django 
+profiles_api_app. The name of that model class is UserProfile.  Django 
 will first find the app "profiles_api_app" that you specify and then look 
 for UserProfile within models.py'''
 
 AUTH_USER_MODEL = 'profiles_api_app.UserProfile'
-
-# AUTHENTICATION_BACKENDS = (
-#     'django.contrib.auth.backends.RemoteUserBackend',
-# )

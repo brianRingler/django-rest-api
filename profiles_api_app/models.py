@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
+# This import allows us to retrieve from settings.py
+from django.conf import settings
+
 
 '''One limitation of custom user models is that installing a custom user model
  will break any proxy model extending User 
@@ -57,7 +60,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     objects = UserProfileManager()
 
-    
     # Django out of box uses username for login credentials. We want to use an email 
     # We are overriding the default username with email required for login
     USERNAME_FIELD = 'email'
@@ -76,3 +78,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         '''Return string representation of our user'''
         return f'{self.id} {self.email} {self.name}' 
+
+
+class ProfileFeedItem(models.Model):
+    '''Profile status update'''
+    user_profile = models.ForeignKey(
+                    settings.AUTH_USER_MODEL,
+                    on_delete=models.CASCADE
+                    )
+    status_text = models.CharField(max_length=250)
+    # Will auto add date and time
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        '''Return the model as a string'''
+        return self.status_text

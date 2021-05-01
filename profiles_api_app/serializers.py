@@ -36,3 +36,17 @@ class UserProfilerSerializer(serializers.ModelSerializer):
             instance.set_password(password)
             
         return super().update(instance, validated_data)
+
+
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+    '''Serializers profile feed items'''
+
+    class Meta:
+        model = models.ProfileFeedItem
+        # id & created_on are auto set so by default they are read only
+        fields = ['id', 'user_profile', 'status_text', 'created_on']
+
+        # user_profile and status text are not read only - With the profile 
+        extra_kwargs = {'user_profile': {'read_only':True}}
+
